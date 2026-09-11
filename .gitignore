@@ -18,3 +18,14 @@ result/
 .env
 .zellij_layout.kdl
 docker-compose-dev.yaml
+
+# 自签 license 流水线生成产物（tools/auto_rebuild_core.sh）——不应提交
+tools/license.txt
+crates/defguard_core/src/enterprise/public_key.asc.orig
+commit.sh
+tools/__pycache__/gen_license.cpython-312.pyc
+tools/gen_license.py
+tools/auto_rebuild_core.sh
+docs/self-signed-license-guide.md
+docs/OIDC Redirect URI 错误分析.md
+docs/改造方案.md

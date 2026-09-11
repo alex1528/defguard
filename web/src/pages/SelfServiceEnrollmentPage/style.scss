@@ -1,0 +1,65 @@
+#self-service-enrollment-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 40px 24px;
+
+  .card {
+    max-width: 480px;
+    width: 100%;
+    padding: 40px;
+    border-radius: 12px;
+    background: var(--surface-main-primary);
+    box-shadow: var(--box-shadow-primary);
+    text-align: center;
+
+    .title {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text-body-primary);
+      margin-bottom: 12px;
+    }
+
+    .description {
+      font-size: 14px;
+      line-height: 20px;
+      color: var(--text-body-secondary);
+      margin-bottom: 32px;
+    }
+
+    .status {
+      font-size: 14px;
+      line-height: 20px;
+      color: var(--text-body-secondary);
+      margin-top: 20px;
+
+      &.error {
+        color: var(--surface-alert-primary);
+      }
+
+      &.success {
+        color: var(--surface-positive-primary);
+      }
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .deep-link-fallback {
+      margin-top: 16px;
+      font-size: 12px;
+      color: var(--text-body-tertiary);
+
+      a {
+        color: var(--surface-main-primary);
+        text-decoration: underline;
+      }
+    }
+  }
+}

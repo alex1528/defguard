@@ -170,6 +170,7 @@ use crate::{
             set_default_branding, test_ldap_settings, test_submitted_ldap_settings,
             update_settings,
         },
+        self_service_enrollment::self_service_enrollment,
         ssh_authorized_keys::get_authorized_keys,
         static_ips::{
             assign_static_ips, get_all_user_device_ips, get_device_ips, validate_ip_assignment,
@@ -486,6 +487,14 @@ pub fn build_webapp(
             .route("/provider/current", get(get_current_openid_provider))
             .route("/callback", post(auth_callback))
             .route("/auth_info", get(get_auth_info)),
+    );
+
+    // Self-service enrollment: authenticated users can generate their own
+    // enrollment token without admin intervention (used by the desktop client
+    // SSO login flow).
+    let api_router = api_router.nest(
+        "/api/v1/enrollment",
+        Router::new().route("/self-service", post(self_service_enrollment)),
     );
 
     let api_router = api_router.nest(

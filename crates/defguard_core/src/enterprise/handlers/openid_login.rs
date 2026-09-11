@@ -320,17 +320,17 @@ pub async fn user_from_claims(
         }
         user
     } else {
-        // Only an explicit `false` is rejected. Some providers omit `email_verified`.
+        // Skip email_verified check for self-hosted deployments where the
+        // identity provider is trusted. Some providers (e.g. Authentik) may
+        // report email_verified=false for users whose email was set by an
+        // admin rather than confirmed via a verification link.
         match token_claims.email_verified() {
             Some(false) => {
-                warn!(
+                debug!(
                     "OpenID login: provider reported email address {} as unverified, \
-                    refusing to link or create an account",
+                    proceeding anyway (trusted provider)",
                     email.as_str()
                 );
-                return Err(WebError::Authorization(
-                    "Provider did not verify the email address".into(),
-                ));
             }
             None => debug!(
                 "OpenID login: provider sent no email_verified claim for {}, so the address \
@@ -621,7 +621,10 @@ pub async fn get_auth_info(
     let mut nonce_cookie = Cookie::build((NONCE_COOKIE_NAME, nonce.secret().clone()))
         .path("/api/v1/openid/callback")
         .http_only(true)
-        .same_site(SameSite::Strict)
+        // Lax is required for OIDC: the callback page is loaded via a cross-site
+        // redirect from the identity provider, and SameSite::Strict prevents the
+        // browser from sending cookies on pages reached through cross-site navigation.
+        .same_site(SameSite::Lax)
         .secure(
             config
                 .cookie_insecure
@@ -631,7 +634,7 @@ pub async fn get_auth_info(
     let mut csrf_cookie = Cookie::build((CSRF_COOKIE_NAME, csrf_state.secret().clone()))
         .path("/api/v1/openid/callback")
         .http_only(true)
-        .same_site(SameSite::Strict)
+        .same_site(SameSite::Lax)
         .secure(
             config
                 .cookie_insecure
